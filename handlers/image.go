@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"image-processing-api/services"
 	"net/http"
 
@@ -12,6 +13,7 @@ func UploadImage(c *gin.Context) {
 	file, err := c.FormFile("image")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Не удалось получить файл"})
+		fmt.Println("error: Не удалось получить файл")
 		return
 	}
 
@@ -19,6 +21,7 @@ func UploadImage(c *gin.Context) {
 	filePath := "./uploads/" + file.Filename
 	if err := c.SaveUploadedFile(file, filePath); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Не удалось сохранить файл"})
+		fmt.Println("error: Не удалось сохранить файл")
 		return
 	}
 
@@ -26,12 +29,14 @@ func UploadImage(c *gin.Context) {
 	processedPath, err := services.ProcessImage(filePath)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ошибка обработки изображения"})
+		fmt.Println("error: Ошибка обработки изображения")
 		return
 	}
 
 	// Успешный ответ
-	c.JSON(http.StatusOK, gin.H{
-		"message":        "Изображение обработано успешно",
-		"processed_file": processedPath,
-	})
+	// c.JSON(http.StatusOK, gin.H{
+	// 	"message":        "Изображение обработано успешно",
+	// 	"processed_file": processedPath,
+	// })
+	c.File(processedPath)
 }

@@ -11,13 +11,13 @@ func ProcessImage(filePath string) (string, error) {
 	// Открытие исходного изображения
 	file, err := os.Open(filePath)
 	if err != nil {
-		return "", err
+		return "nil", err
 	}
 	defer file.Close()
 
 	img, _, err := image.Decode(file)
 	if err != nil {
-		return "", err
+		return "nil", err
 	}
 
 	// Пример обработки: конвертация в черно-белый
@@ -31,17 +31,19 @@ func ProcessImage(filePath string) (string, error) {
 	}
 
 	// Сохранение обработанного изображения
-	processedPath := "./uploads/processed_image.jpg"
-	outputFile, err := os.Create(processedPath)
+	outputFile, err := os.Create("downloaded_image.jpg")
 	if err != nil {
-		return "", err
+		return "nil", err
 	}
 	defer outputFile.Close()
 
 	err = jpeg.Encode(outputFile, grayImg, nil)
 	if err != nil {
-		return "", err
+		return "nil", err
 	}
 
-	return processedPath, nil
+	return "downloaded_image.jpg", nil
+
 }
+
+//		В ДАННОМ КОДЕ ВСЕ err БЫЛИ ЗАМЕНЕНЫ НА _ !!!!!!

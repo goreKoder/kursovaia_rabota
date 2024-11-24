@@ -1,4 +1,4 @@
-package main
+package main //		go run main.go
 
 import (
 	"bytes"
@@ -41,7 +41,6 @@ func main() {
 	// Отправляем запрос
 	url := "http://localhost:8080/upload"
 	req, err := http.NewRequest("POST", url, body) //вроде как оно расширяет возможности отправки запроса, но мне похер, я и так ели-ели понимаю как работает мой код
-	// req, err := http.Post(url, "application/json", body)
 	if err != nil {
 		fmt.Println("Ошибка создания запроса:", err)
 		return
@@ -58,11 +57,26 @@ func main() {
 	defer req.Body.Close()
 
 	// Читаем ответ
-	responseBody, err := io.ReadAll(resp.Body)
-	// responseBody, err := io.ReadAll(req.Body)
+	// responseBody, err := io.ReadAll(resp.Body)
+	// if err != nil {
+	// 	fmt.Println("Ошибка чтения ответа:", err)
+	// 	return
+	// }
+	// fmt.Println("Ответ сервера:", string(responseBody))
+
+	// Открываем файл для записи на диске
+	outFile, err := os.Create("downloaded_image.jpg")
 	if err != nil {
-		fmt.Println("Ошибка чтения ответа:", err)
+		fmt.Println("Ошибка создания файла:", err)
 		return
 	}
-	fmt.Println("Ответ сервера:", string(responseBody))
+	defer outFile.Close()
+
+	// Копируем данные из ответа в файл
+	_, err = io.Copy(outFile, resp.Body)
+	if err != nil {
+		fmt.Println("Ошибка записи в файл:", err)
+		return
+	}
+
 }
