@@ -31,7 +31,7 @@ func ProcessImage(filePath string) (string, error) {
 	}
 
 	// Сохранение обработанного изображения
-	outputFile, err := os.Create("downloaded_image.jpg")
+	outputFile, err := os.Create("./uploads/downloaded_image.jpg")
 	if err != nil {
 		return "nil", err
 	}
@@ -45,5 +45,3 @@ func ProcessImage(filePath string) (string, error) {
 	return "downloaded_image.jpg", nil
 
 }
-
-//		В ДАННОМ КОДЕ ВСЕ err БЫЛИ ЗАМЕНЕНЫ НА _ !!!!!!
