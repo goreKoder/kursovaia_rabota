@@ -7,11 +7,13 @@ import (
 )
 
 func main() {
+	// gin.SetMode(gin.ReleaseMode) // tckb 'nj yt chf,jnftn то я буду плакать
 	r := gin.Default()
-
 	// Роут для загрузки изображения
-	r.POST("/upload", handlers.UploadImage)
+	r.POST("/upoad/:id", handlers.UploadImage)
 
 	// Запуск сервера
-	r.Run(":8080") // API будет доступен на localhost:8080
+	r.Run(":8080") // Слушаем порт 8080
 }
+
+//		go run main.go

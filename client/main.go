@@ -7,6 +7,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"os"
+	"strconv"
 )
 
 func main() {
@@ -34,12 +35,14 @@ func main() {
 		fmt.Println("Ошибка записи файла в запрос:", err)
 		return
 	}
-
 	// Завершаем формирование запроса
 	writer.Close()
 
 	// Отправляем запрос
-	url := "http://localhost:8080/upload"
+	var id int
+	fmt.Println("Какую операцию вы хотите произвести: 1.Обрезка 2.Изменение размера 3.Изменить цвет")
+	fmt.Scan(&id)
+	url := "http://localhost:8080/upoad/" + strconv.Itoa(id)
 	req, err := http.NewRequest("POST", url, body) //вроде как оно расширяет возможности отправки запроса, но мне похер, я и так ели-ели понимаю как работает мой код
 	if err != nil {
 		fmt.Println("Ошибка создания запроса:", err)
@@ -55,14 +58,6 @@ func main() {
 	}
 	defer resp.Body.Close()
 	defer req.Body.Close()
-
-	// Читаем ответ
-	// responseBody, err := io.ReadAll(resp.Body)
-	// if err != nil {
-	// 	fmt.Println("Ошибка чтения ответа:", err)
-	// 	return
-	// }
-	// fmt.Println("Ответ сервера:", string(responseBody))
 
 	// Открываем файл для записи на диске
 	outFile, err := os.Create("downloaded_image.jpg")
@@ -80,3 +75,5 @@ func main() {
 	}
 
 }
+
+//			go run main.go

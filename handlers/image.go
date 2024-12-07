@@ -4,11 +4,15 @@ import (
 	"fmt"
 	"image-processing-api/services"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
 func UploadImage(c *gin.Context) {
+	// Извлекаем параметр id
+	id := c.Param("id")
+	fmt.Println("id = ", id)
 	// Получение файла из запроса
 	file, err := c.FormFile("image")
 	if err != nil {
@@ -24,19 +28,35 @@ func UploadImage(c *gin.Context) {
 		fmt.Println("error: Не удалось сохранить файл")
 		return
 	}
-
-	// Обработка изображения
-	processedPath, err := services.ProcessImage(filePath)
+	i, err := strconv.Atoi(id)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ошибка обработки изображения"})
-		fmt.Println("error: Ошибка обработки изображения")
-		return
+		panic(err)
 	}
-
-	// Успешный ответ
-	// c.JSON(http.StatusOK, gin.H{
-	// 	"message":        "Изображение обработано успешно",
-	// 	"processed_file": processedPath,
-	// })
-	c.File(processedPath)
+	switch i {
+	case 1: //		обрезка
+		processedPath, err := services.CropImage(filePath, 100, 100, 200, 200)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Ошибка обработки изображения"})
+			fmt.Println("error: Ошибка обработки изображения")
+			return
+		}
+		c.File(processedPath)
+	case 2: //		изменение размера
+		processedPath, err := services.ResizeImage(filePath, 150, 150)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Ошибка обработки изображения"})
+			fmt.Println("error: Ошибка обработки изображения")
+			return
+		}
+		c.File(processedPath)
+	case 3:
+		// Смена цвета
+		processedPath, err := services.ProcessImage(filePath)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Ошибка обработки изображения"})
+			fmt.Println("error: Ошибка обработки изображения")
+			return
+		}
+		c.File(processedPath)
+	}
 }
